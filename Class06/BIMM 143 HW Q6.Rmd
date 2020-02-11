@@ -1,0 +1,51 @@
+---
+title: "BIMM 143 HW Q6"
+author: "Ji Sun Chin"
+date: "1/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(bio3d)
+plot_prot <- function(pdb_code= c("4AKE","1AKE","1E4Y")) {
+
+  #reads in pdb files for each protein and stores them as lists 
+   s1 <- read.pdb("4AKE") # kinase with drug 
+   s2 <- read.pdb("1AKE") # kinase no drug 
+   s3 <- read.pdb("1E4Y") # kinase with drug
+  #creates new variables s(n).chainA containing a subset of s(n) containing atoms pertaining to chain A of each respective protein
+  s1.chainA <- trim.pdb(s1, chain="A", elety="CA") 
+  s2.chainA <- trim.pdb(s2, chain="A", elety="CA") 
+  s3.chainA <- trim.pdb(s1, chain="A", elety="CA")
+  #creates a new numeric vectors s(n).b containing information regarding the b factors of chain A of each respective protein
+  s1.b <- s1.chainA$atom$b 
+  s2.b <- s2.chainA$atom$b 
+  s3.b <- s3.chainA$atom$b
+  #plots a standard scatterplot for the b factor data contained in s(n).b with a secondary marginal structure that display the major secondary structure at each residue
+  plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor") 
+  plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor") 
+  plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+  
+}
+```
+
+```{r}
+library(bio3d)
+plot_prot(c("4AKE","1AKE","1E4Y")) #calls the function plot_prot with an input vector containing the 4 letter pdb codes for the proteins to be plotted, which in this case are variants of kinase.
+#Output: plots displaying bfactor data for each specified protein(which is an indicator for protein dynamics) as well as major secondary structures at each residue for each protein of interest
+```
+
+
+
+
+
+
+
+
+
+
+

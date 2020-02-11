@@ -1,0 +1,244 @@
+---
+title: 'Class 6: R Functions'
+author: "Ji Sun Chin"
+date: "1/23/2020"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Functions
+## Level 2 Heading
+### Level 3 Heading
+
+## This is a Secondary Title *Italics* **Bold**
+
+this is just any old text
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r}
+plot(1:5, type="l", col="blue")
+```
+
+
+Lets see more about **file import**(i.e. reading files into R). The main read function in base R is `read.table()` 
+
+```{r}
+t1 <- read.csv("test1.txt")
+t12 <- read.table("test1.txt", header= TRUE, sep=",")
+t1
+
+t2 <- read.table("test2.txt", header= TRUE, sep="$" )
+t2
+
+t3 <- read.table("test3.txt")
+t3
+
+```
+
+#Back to Functions
+
+Our first example function:
+```{r}
+add <-  function(x, y=1) {
+  #Sum the input x and y
+  x+y
+}
+
+```
+
+Let's try using this function
+```{r}
+add(7,3)
+add(c(1,2,3))
+add(c(1,2,3), 4)
+add(c(1,2,4),c(1,2,4))
+```
+```{r}
+x <- c(1:10)
+```
+
+This is our second function
+```{r}
+rescale <-  function(x) {
+  rng <- range(x)
+  (x-rng[1])/(rng[2]-rng[1])
+}
+```
+
+```{r}
+rescale(x)
+
+
+```
+
+
+```{r}
+#How would you get your function to work here...
+rescale(c(1,2,NA, 3,10))
+```
+
+```{r}
+x <- c(1,2,NA,3,10)
+rng <- range(x)
+rng
+#returns all NA
+```
+Need to omit NA values
+```{r}
+rng <- range(x, na.rm=TRUE)
+rng
+```
+Change in original function
+```{r}
+rescale2 <-  function(x) {
+  rng <- range(x, na.rm=TRUE)
+  (x-rng[1])/(rng[2]-rng[1])
+}
+```
+Function now ignores NA values
+```{r}
+x <- c(1,2,NA,3,10)
+rescale(x)
+```
+
+```{r}
+rescale3 <- function(x, na.rm=TRUE, plot=FALSE) {
+rng <-range(x, na.rm=na.rm)
+print("Hello")
+answer <- (x - rng[1]) / (rng[2] - rng[1])
+print("is it me you are looking for?")
+if(plot) {
+  print("Don't sing again please!")
+  plot(answer, typ="b", lwd=4)
+}
+print("I can see it in ...")
+return(answer)
+}
+```
+
+```{r}
+rescale3(x,plot=FALSE
+         )
+```
+ 
+
+```{r}
+library(bio3d)
+s1 <- read.pdb("4AKE") # kinase with drug
+s2 <- read.pdb("1AKE") # kinase no drug
+s3 <- read.pdb("1E4Y") # kinase with drug
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+s3.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s1.b <- s1.chainA$atom$b
+s2.b <- s2.chainA$atom$b
+s3.b <- s3.chainA$atom$b
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor")
+plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+```
+
+>Q1. What type of object is returned from `read.pdb`
+
+It is a list of 8 things and of class "pdb", "sse"
+```{r}
+class(s1)
+```
+```{r}
+str(s1)
+```
+
+```{r}
+s1$seqres
+
+```
+
+```{r}
+s1$atom
+```
+plots s2.b on the same plot as s1.b
+```{r}
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+points(s2.b, typ="l", col="blue", lwd=2)
+points(s3.b, typ="l", col="red", lwd=2)
+```
+ 
+```{r}
+hc <- hclust( dist( rbind(s1.b, s2.b, s3.b) ) )
+plot(hc)
+```
+
+```{r}
+library(bio3d)
+plot_prot <- function(seq) {
+  
+if(seq=="s1") {
+  plots1()
+} else if (seq=="s2") {
+    plots2()
+    }
+else{
+  plots3()
+}
+}
+```
+
+```{r}
+plots1 <- function(){
+  s1 <- read.pdb("4AKE")
+  s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+  s1.b <- s1.chainA$atom$b 
+  plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor")
+}
+```
+
+```{r}
+plots2 <- function(){
+  s2 <- read.pdb("1AKE")
+  s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+  s2.b <- s2.chainA$atom$b
+  plotb3(s2.b, sse=s2.chainA, typ="l", ylab="Bfactor")
+}
+```
+
+```{r}
+plots3 <- function(){
+  s3 <- read.pdb("1E4Y")
+  s3.chainA <- trim.pdb(s3, chain="A", elety="CA")
+  s3.b <- s3.chainA$atom$b
+  plotb3(s3.b, sse=s3.chainA, typ="l", ylab="Bfactor")
+}
+```
+
+
+```{r}
+plot_prot("s1" )
+plot_prot("s2" )
+plot_prot("s3" )
+```
+
+ 
+
+
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
