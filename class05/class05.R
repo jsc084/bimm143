@@ -1,8 +1,9 @@
-#' ---
-#' title: "Class 5: Data Visualization and graphs in R"
-#' author: "Ji Sun Chin"
-#' date: "January 21st, 2020"
-#' ---
+ ---
+title: "Class 5: Data Visualization and graphs in R"
+ author: "Ji Sun Chin"
+ date: "January 21st, 2020"
+ output: github_document
+ ---
 
 # Class 5
 # Data Visualization and graphs in R
